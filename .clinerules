@@ -7,4 +7,5 @@
 2.  **Workflow**:
     *   **Git Branching**: Create a new git branch for each new "task".
     *   **Testing**: All new functionality must have good unit tests. Verify that tests pass before marking a task as complete.
+    *   **Task Planning**: All todos for a task should be kept track of in the `plan.md` file. Each new branch should start with a clean `plan.md` file.
     *   **Completion**: At the end of a task, ensure all updates have been committed to the feature branch.
