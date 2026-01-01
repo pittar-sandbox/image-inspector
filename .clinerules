@@ -5,4 +5,6 @@
     *   **IMPORTANT**: Do not change the version of Python.
 
 2.  **Workflow**:
-    *   Create a new git branch for each new "task".
+    *   **Git Branching**: Create a new git branch for each new "task".
+    *   **Testing**: All new functionality must have good unit tests. Verify that tests pass before marking a task as complete.
+    *   **Completion**: At the end of a task, ensure all updates have been committed to the feature branch.
