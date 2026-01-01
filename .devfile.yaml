@@ -1,0 +1,67 @@
+schemaVersion: 2.2.2
+attributes:
+  controller.devfile.io/storage-type: per-workspace
+metadata:
+  name: image-inspector
+  provider: Red Hat
+  displayName: Vibe Coding with Python
+  description: Python with Roo Code for Vibe Coding.
+  tags:
+    - Python
+    - AI
+    - Vibe Coding
+    - Roo/Cline
+  projectType: Python
+  language: Python
+projects:
+  - name: "image-inspector"
+    git:
+      remotes:
+        origin: "https://github.com/pittar-sandbox/image-inspector"
+      checkoutFrom:
+        revision: "main"
+        remote: origin
+components:
+  - name: py
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel9:latest
+      args: ['tail', '-f', '/dev/null']
+      mountSources: true
+      endpoints:
+        - name: https-python
+          targetPort: 8080
+          protocol: https
+        - exposure: none
+          name: debug
+          targetPort: 5858
+      env:
+        - name: DEBUG_PORT
+          value: '5858'
+      cpuLimit: '4'
+      cpuRequest: '1'
+      memoryLimit: '8G'
+      memoryRequest: '8G'
+commands:
+  - id: pip-install-requirements
+    exec:
+      commandLine: pip install -r requirements.txt
+      workingDir: ${PROJECT_SOURCE}
+      group:
+        kind: build
+        isDefault: true
+      component: py
+  - id: run-app
+    exec:
+      commandLine: 'python app.py'
+      workingDir: ${PROJECT_SOURCE}
+      component: py
+      group:
+        kind: run
+        isDefault: true
+  - id: debug-py
+    exec:
+      commandLine: 'pip install debugpy && python -m debugpy --listen 0.0.0.0:${DEBUG_PORT} app.py'
+      workingDir: ${PROJECT_SOURCE}
+      component: py
+      group:
+        kind: debug

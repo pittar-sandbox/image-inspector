@@ -1,0 +1,8 @@
+# Project Rules
+
+1.  **Project Configuration**:
+    *   This is a Python 3.12 project
+    *   **IMPORTANT**: Do not change the version of Python.
+
+2.  **Workflow**:
+    *   Create a new git branch for each new "task".
