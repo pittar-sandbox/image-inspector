@@ -24,7 +24,7 @@ projects:
 components:
   - name: py
     container:
-      image: registry.redhat.io/devspaces/udi-rhel9:latest
+      image: registry.redhat.io/devspaces/udi-base-rhel10:latest
       args: ['tail', '-f', '/dev/null']
       mountSources: true
       endpoints:
@@ -52,7 +52,7 @@ commands:
       component: py
   - id: run-app
     exec:
-      commandLine: 'python app.py'
+      commandLine: 'python src/app.py'
       workingDir: ${PROJECT_SOURCE}
       component: py
       group:
@@ -60,7 +60,7 @@ commands:
         isDefault: true
   - id: debug-py
     exec:
-      commandLine: 'pip install debugpy && python -m debugpy --listen 0.0.0.0:${DEBUG_PORT} app.py'
+      commandLine: 'pip install debugpy && python -m debugpy --listen 0.0.0.0:${DEBUG_PORT} src/app.py'
       workingDir: ${PROJECT_SOURCE}
       component: py
       group:
