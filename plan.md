@@ -1,7 +1,7 @@
-# Plan: Fix Image URL Validation
+# Task: Revert Containerfile
 
-- [x] Create a reproduction test case that fails when leading/trailing spaces are present in the URL.
-- [x] Modify `app.py` to strip whitespace from the provided URL.
-- [x] Ensure all tests pass.
-- [x] Commit changes.
-- [x] Verify test coverage is above 80%.
+- [ ] Check git status and log for Containerfile
+- [ ] Create new branch for the task
+- [ ] Revert Containerfile to previous revision
+- [ ] Verify the reversion
+- [ ] Commit changes
