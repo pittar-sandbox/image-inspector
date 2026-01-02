@@ -1,5 +1,78 @@
-# image-inspector
+# Image Inspector
 
-Just a fun side project to test some vibe coding tools on.
+Image Inspector is a simple Flask-based web application that utilizes `skopeo` to inspect remote container images without pulling them. It provides a user-friendly interface to view image metadata, including details about layers, environment variables, labels, and more.
 
-Update this app.
+## Features
+
+- **Remote Inspection**: Inspect container images from various registries (Docker Hub, Quay.io, etc.) without downloading the full image.
+- **Platform Specifics**: Option to specify OS and Architecture for multi-arch images.
+- **JSON Output**: Returns the raw JSON output from `skopeo inspect` for easy programmatic consumption or detailed analysis.
+- **Web Interface**: Clean and simple web UI for entering image details.
+
+## Prerequisites
+
+- **Container Runtime**: Podman or Docker
+- **Build Tool**: Buildah (optional, for using the provided build script)
+
+## Building the Container
+
+You can build the container image using the provided `build.sh` script (requires `buildah`) or using standard Docker/Podman commands.
+
+### Using Build Script
+```bash
+./build.sh
+```
+
+### Using Podman
+```bash
+podman build -t image-inspector:latest -f Containerfile .
+```
+
+### Using Docker
+```bash
+docker build -t image-inspector:latest -f Containerfile .
+```
+
+## Running the Application
+
+Once built, you can run the container exposing port 5000:
+
+```bash
+podman run -d -p 5000:5000 image-inspector:latest
+```
+*Note: Replace `podman` with `docker` if you are using Docker.*
+
+The application will be accessible at `http://localhost:5000`.
+
+## Usage
+
+1. Open your browser and navigate to `http://localhost:5000`.
+2. Enter the **Image URL** (e.g., `quay.io/pittar/petclinic:latest` or `alpine:latest`).
+3. (Optional) Specify the **OS** (e.g., `linux`).
+4. (Optional) Specify the **Architecture** (e.g., `amd64`, `arm64`).
+5. Click **Inspect**.
+6. The application will display the raw JSON metadata retrieved by `skopeo`.
+
+## Local Development
+
+To run the application locally without a container, you need Python 3.12 and `skopeo` installed on your system.
+
+1. **Install Prerequisites**:
+   - Python 3.12
+   - `skopeo` (install via your package manager, e.g., `dnf install skopeo` or `apt-get install skopeo`)
+
+2. **Set up Virtual Environment**:
+   ```bash
+   python3.12 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+3. **Run the App**:
+   ```bash
+   python -m flask run --host=0.0.0.0 --port=5000
+   ```
+
+## License
+
+[Add License Information Here]
