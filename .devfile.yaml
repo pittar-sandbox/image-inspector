@@ -50,6 +50,14 @@ commands:
         kind: build
         isDefault: true
       component: py
+  - id: test-app
+    exec:
+      commandLine: 'python -m pytest --cov=app'
+      workingDir: ${PROJECT_SOURCE}
+      component: py
+      group:
+        kind: run
+        isDefault: true
   - id: run-app
     exec:
       commandLine: 'python app.py'
