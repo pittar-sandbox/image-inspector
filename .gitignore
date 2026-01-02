@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+tests/__pycache__/
 
 # Virtual Environment
 venv/
@@ -17,4 +18,3 @@ ENV/
 # OS specific
 .DS_Store
 Thumbs.db
-#tests/__pycache__/*
