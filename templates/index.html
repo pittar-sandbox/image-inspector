@@ -54,6 +54,27 @@
         button:hover {
             background-color: #0056b3;
         }
+        .summary-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .summary-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: baseline;
+        }
+        .summary-label {
+            font-weight: bold;
+            min-width: 150px;
+            color: #495057;
+        }
+        .summary-value {
+            color: #212529;
+        }
         #result {
             margin-top: 20px;
             padding: 15px;
@@ -77,6 +98,17 @@
             text-align: center;
             display: none;
             margin-top: 20px;
+        }
+        .toggle-raw {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
@@ -102,24 +134,73 @@
 
     <div id="loading" class="loading">Inspecting image... please wait.</div>
     <div id="error" class="error"></div>
+
+    <div id="summary" class="summary-card">
+        <div class="summary-item">
+            <span class="summary-label">Image Name:</span>
+            <span id="summary-name" class="summary-value"></span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Total Image Size:</span>
+            <span id="summary-size" class="summary-value"></span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">OS Type:</span>
+            <span id="summary-os" class="summary-value"></span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Architecture:</span>
+            <span id="summary-arch" class="summary-value"></span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Number of Layers:</span>
+            <span id="summary-layers" class="summary-value"></span>
+        </div>
+    </div>
+
+    <button id="toggleRaw" class="toggle-raw">Show Raw JSON Data</button>
     <div id="result"></div>
 </div>
 
 <script>
+    function formatBytesToMB(bytes, decimals = 2) {
+        if (!+bytes) return '0 MB';
+        const k = 1024 * 1024; // 1 MB = 1024 * 1024 bytes
+        const dm = decimals < 0 ? 0 : decimals;
+        return `${parseFloat((bytes / k).toFixed(dm))} MB`;
+    }
+
+    document.getElementById('toggleRaw').addEventListener('click', function() {
+        const resultDiv = document.getElementById('result');
+        if (resultDiv.style.display === 'none') {
+            resultDiv.style.display = 'block';
+            this.textContent = 'Hide Raw JSON Data';
+        } else {
+            resultDiv.style.display = 'none';
+            this.textContent = 'Show Raw JSON Data';
+        }
+    });
+
     document.getElementById('inspectForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const formData = new FormData(this);
         const resultDiv = document.getElementById('result');
+        const summaryDiv = document.getElementById('summary');
         const errorDiv = document.getElementById('error');
         const loadingDiv = document.getElementById('loading');
+        const toggleBtn = document.getElementById('toggleRaw');
 
         // Reset display
         resultDiv.style.display = 'none';
+        summaryDiv.style.display = 'none';
         errorDiv.style.display = 'none';
+        toggleBtn.style.display = 'none';
         loadingDiv.style.display = 'block';
+        
         resultDiv.textContent = '';
         errorDiv.textContent = '';
+        toggleBtn.textContent = 'Show Raw JSON Data';
 
         fetch('/inspect', {
             method: 'POST',
@@ -132,9 +213,27 @@
                 errorDiv.textContent = data.error;
                 errorDiv.style.display = 'block';
             } else {
-                // Pretty print the JSON result
+                // Populate Summary
+                document.getElementById('summary-name').textContent = data.Name || 'N/A';
+                
+                // Calculate size
+                let totalSize = 0;
+                if (data.LayersData && Array.isArray(data.LayersData)) {
+                    totalSize = data.LayersData.reduce((acc, layer) => acc + (layer.Size || 0), 0);
+                }
+                document.getElementById('summary-size').textContent = formatBytesToMB(totalSize);
+                
+                document.getElementById('summary-os').textContent = data.Os || 'N/A';
+                document.getElementById('summary-arch').textContent = data.Architecture || 'N/A';
+                
+                const layersCount = data.Layers ? data.Layers.length : (data.LayersData ? data.LayersData.length : 0);
+                document.getElementById('summary-layers').textContent = layersCount;
+
+                summaryDiv.style.display = 'block';
+
+                // Raw JSON result
                 resultDiv.textContent = JSON.stringify(data, null, 2);
-                resultDiv.style.display = 'block';
+                toggleBtn.style.display = 'inline-block';
             }
         })
         .catch(error => {

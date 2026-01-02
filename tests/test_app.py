@@ -34,7 +34,17 @@ def test_inspect_image_missing_url(client):
 def test_inspect_image_success(mock_subprocess, client):
     """Test successful image inspection."""
     # Mock the subprocess result
-    mock_output = {'Layers': ['layer1', 'layer2'], 'Digest': 'sha256:12345'}
+    mock_output = {
+        'Layers': ['layer1', 'layer2'],
+        'Digest': 'sha256:12345',
+        'LayersData': [
+            {'Size': 100},
+            {'Size': 200}
+        ],
+        'Name': 'test-image',
+        'Os': 'linux',
+        'Architecture': 'amd64'
+    }
     mock_process = MagicMock()
     mock_process.stdout = json.dumps(mock_output)
     mock_process.returncode = 0
