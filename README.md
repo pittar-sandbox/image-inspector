@@ -17,11 +17,11 @@ Image Inspector is a simple Flask-based web application that utilizes `skopeo` t
 
 ## Building the Container
 
-You can build the container image using the provided `build.sh` script (requires `buildah`) or using standard Docker/Podman commands.
+You can build the container image using `buildah` or standard Docker/Podman commands.
 
-### Using Build Script
+### Using Buildah
 ```bash
-./build.sh
+buildah bud -t image-inspector:latest -f Containerfile .
 ```
 
 ### Using Podman
