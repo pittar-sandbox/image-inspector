@@ -1,7 +1,10 @@
-# Task: Update README.md
+# Test Update Plan
 
-- [x] Analyze project files (`app.py`, `Containerfile`, `build.sh`) to understand functionality and build process <!-- id: 0 -->
-- [x] Draft new `README.md` content <!-- id: 1 -->
-- [x] Update `README.md` <!-- id: 2 -->
-- [x] Verify content <!-- id: 3 -->
-- [x] Commit changes <!-- id: 4 -->
+- [x] Inspect existing tests in `tests/test_app.py`
+- [x] Create/Update tests for `index` route (GET /)
+- [x] Create/Update tests for `inspect_image` route (POST /inspect)
+    - [x] Test missing `image_url`
+    - [x] Test successful inspection (mocked `skopeo`)
+    - [x] Test `skopeo` failure (mocked error)
+    - [x] Test `os_type` and `architecture` parameters
+- [x] Run tests and ensure they pass
