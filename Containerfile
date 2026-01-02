@@ -1,20 +1,13 @@
 # Stage 1: Builder
-#FROM registry.access.redhat.com/ubi9/ubi:latest AS builder
-FROM quay.io/hummingbird/python:3-builder AS builder
-
-USER root
+FROM registry.access.redhat.com/ubi9/ubi:latest AS builder
 
 # Install Python 3.12 and build dependencies
-# RUN dnf install -y python3.12 python3.12-pip python3.12-devel && \
-#     dnf clean all
-
-RUN microdnf install -y skopeo && \
-    microdnf clean all
+RUN dnf install -y python3.12 python3.12-pip python3.12-devel && \
+    dnf clean all
 
 # Create a virtual environment
 ENV VIRTUAL_ENV=/opt/venv
-#RUN python3.12 -m venv $VIRTUAL_ENV
-RUN python -m venv $VIRTUAL_ENV
+RUN python3.12 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install application dependencies
@@ -22,23 +15,19 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Final Image
-# FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
-FROM quay.io/hummingbird/python:3
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 # Install runtime dependencies
 # shadow-utils is needed for user creation (useradd) if not present, but ubi-minimal might not have it.
 # We can use microdnf.
-# RUN microdnf install -y python3.12 skopeo shadow-utils && \
-#     microdnf clean all
-# RUN microdnf install -y skopeo shadow-utils && \
-#     microdnf clean all
+RUN microdnf install -y python3.12 skopeo shadow-utils && \
+    microdnf clean all
 
 # Create a non-root user
-#RUN useradd -m -s /bin/bash appuser
+RUN useradd -m -s /bin/bash appuser
 
 # Copy virtual environment from builder
 COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /usr/bin/skopeo /usr/bin/skopeo
 
 # Set environment variables
 ENV VIRTUAL_ENV=/opt/venv
@@ -53,13 +42,10 @@ COPY app.py .
 COPY templates/ templates/
 
 # Change ownership to non-root user
-#RUN chown -R appuser:appuser /app
-#RUN chmod +x /usr/bin/skopeo
-
-#RUN chown -R 0 /app && chmod -R g=u /app
+RUN chown -R appuser:appuser /app
 
 # Switch to non-root user
-USER 1001
+USER appuser
 
 # Expose port
 EXPOSE 5000
