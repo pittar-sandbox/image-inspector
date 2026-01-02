@@ -6,6 +6,7 @@ Image Inspector is a simple Flask-based web application that utilizes `skopeo` t
 
 - **Remote Inspection**: Inspect container images from various registries (Docker Hub, Quay.io, etc.) without downloading the full image.
 - **Platform Specifics**: Option to specify OS and Architecture for multi-arch images.
+- **Detailed Summary**: Displays key image details such as size, layers, OS, and architecture.
 - **JSON Output**: Returns the raw JSON output from `skopeo inspect` for easy programmatic consumption or detailed analysis.
 - **Web Interface**: Clean and simple web UI for entering image details.
 
@@ -51,7 +52,7 @@ The application will be accessible at `http://localhost:5000`.
 3. (Optional) Specify the **OS** (e.g., `linux`).
 4. (Optional) Specify the **Architecture** (e.g., `amd64`, `arm64`).
 5. Click **Inspect**.
-6. The application will display the raw JSON metadata retrieved by `skopeo`.
+6. The application will display a summary of the image metadata. You can also view the raw JSON output by clicking "Show Raw JSON Data".
 
 ## Local Development
 
@@ -75,4 +76,4 @@ To run the application locally without a container, you need Python 3.12 and `sk
 
 ## License
 
-[Add License Information Here]
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
