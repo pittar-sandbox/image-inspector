@@ -13,6 +13,8 @@ def index():
 @app.route('/inspect', methods=['POST'])
 def inspect_image():
     image_url = request.form.get('image_url')
+    if image_url:
+        image_url = image_url.strip()
     os_type = request.form.get('os_type')
     architecture = request.form.get('architecture')
 

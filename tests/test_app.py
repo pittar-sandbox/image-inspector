@@ -120,3 +120,29 @@ def test_inspect_image_json_error(mock_subprocess, client):
     
     assert response.status_code == 500
     assert b'Failed to parse skopeo output' in response.data
+
+@patch('subprocess.run')
+def test_inspect_image_with_spaces_success(mock_subprocess, client):
+    """Test successful image inspection when URL has surrounding spaces."""
+    # Mock the subprocess result
+    mock_output = {
+        'Layers': ['layer1'],
+        'Name': 'test-image'
+    }
+    mock_process = MagicMock()
+    mock_process.stdout = json.dumps(mock_output)
+    mock_process.returncode = 0
+    mock_subprocess.return_value = mock_process
+
+    # Send URL with spaces
+    response = client.post('/inspect', data={'image_url': ' my-image '})
+    
+    assert response.status_code == 200
+    assert response.json == mock_output
+    
+    # Verify subprocess was called with STRIPPED URL
+    mock_subprocess.assert_called_once()
+    args, _ = mock_subprocess.call_args
+    cmd_args = args[0]
+    # Should contain 'docker://my-image' NOT 'docker:// my-image '
+    assert 'docker://my-image' in cmd_args
