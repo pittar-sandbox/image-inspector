@@ -2,6 +2,8 @@
 
 Image Inspector is a simple Flask-based web application that utilizes `skopeo` to inspect remote container images without pulling them. It provides a user-friendly interface to view image metadata, including details about layers, environment variables, labels, and more.
 
+This is a test to see if the PR task works.
+
 ## Features
 
 - **Remote Inspection**: Inspect container images from various registries (Docker Hub, Quay.io, etc.) without downloading the full image.
