@@ -1,4 +1,4 @@
-# Image Inspector
+# OCI Image Inspector
 
 Image Inspector is a simple Flask-based web application that utilizes `skopeo` to inspect remote container images without pulling them. It provides a user-friendly interface to view image metadata, including details about layers, environment variables, labels, and more.
 
@@ -60,7 +60,10 @@ To run the application locally without a container, you need Python 3.12 and `sk
 
 1. **Install Prerequisites**:
    - Python 3.12
-   - `skopeo` (install via your package manager, e.g., `dnf install skopeo` or `apt-get install skopeo`)
+   - `skopeo`
+     - **Linux (RHEL/Fedora/CentOS)**: `dnf install skopeo`
+     - **Linux (Debian/Ubuntu)**: `apt-get install skopeo`
+     - **macOS (Homebrew)**: `brew install skopeo`
 
 2. **Set up Virtual Environment**:
    ```bash
@@ -72,6 +75,20 @@ To run the application locally without a container, you need Python 3.12 and `sk
 3. **Run the App**:
    ```bash
    python -m flask run --host=0.0.0.0 --port=5000
+   ```
+
+## Running Tests
+
+This project uses `pytest` for testing.
+
+1. Ensure your virtual environment is activated and dependencies are installed (see above).
+2. Run the tests:
+   ```bash
+   pytest
+   ```
+3. To run tests with coverage:
+   ```bash
+   pytest --cov=app
    ```
 
 ## License
