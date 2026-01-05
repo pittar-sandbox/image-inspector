@@ -17,6 +17,8 @@ def inspect_image():
         image_url = image_url.strip()
     os_type = request.form.get('os_type')
     architecture = request.form.get('architecture')
+    username = request.form.get('username')
+    password = request.form.get('password')
 
     if not image_url:
         return jsonify({'error': 'Image URL is required'}), 400
@@ -36,7 +38,10 @@ def inspect_image():
     
     if architecture:
         cmd_args.extend(['--override-arch', architecture])
-        
+    
+    if username and password:
+        cmd_args.extend(['--creds', f"{username}:{password}"])
+
     # Ensure the image url has the docker:// prefix if not present (assuming docker transport for simplicity, or let user provide it)
     # The prompt example "quay.io/pittar/petclinic:latest" suggests no prefix, so we should probably add docker://
     if not "://" in image_url:
@@ -46,7 +51,18 @@ def inspect_image():
 
     cmd_args.append(full_image_url)
 
-    app.logger.info(f"Executing command: {' '.join(cmd_args)}")
+    # Log command without password for security
+    log_args = cmd_args.copy()
+    if username and password:
+        # Find and mask the credentials
+        try:
+            creds_index = log_args.index('--creds')
+            if creds_index + 1 < len(log_args):
+                log_args[creds_index + 1] = '*****:*****'
+        except ValueError:
+            pass # --creds not found
+
+    app.logger.info(f"Executing command: {' '.join(log_args)}")
 
     try:
         result = subprocess.run(cmd_args, capture_output=True, text=True, check=True)

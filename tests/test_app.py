@@ -93,6 +93,31 @@ def test_inspect_image_with_params(mock_subprocess, client):
     assert 'amd64' in cmd_args
 
 @patch('subprocess.run')
+def test_inspect_image_with_creds(mock_subprocess, client):
+    """Test image inspection with credentials."""
+    mock_process = MagicMock()
+    mock_process.stdout = "{}"
+    mock_process.returncode = 0
+    mock_subprocess.return_value = mock_process
+
+    response = client.post('/inspect', data={
+        'image_url': 'private-image',
+        'username': 'myuser',
+        'password': 'mypassword'
+    })
+    
+    assert response.status_code == 200
+    
+    # Verify subprocess was called with correct flags
+    mock_subprocess.assert_called_once()
+    args, _ = mock_subprocess.call_args
+    cmd_args = args[0]
+    
+    # Check for --creds myuser:mypassword
+    assert '--creds' in cmd_args
+    assert 'myuser:mypassword' in cmd_args
+
+@patch('subprocess.run')
 def test_inspect_image_skopeo_error(mock_subprocess, client):
     """Test handling of skopeo command failure."""
     # Simulate CalledProcessError
