@@ -4,6 +4,8 @@ Image Inspector is a simple Flask-based web application that utilizes `skopeo` t
 
 This is a test to see if the PR task works.
 
+And another test!
+
 ## Features
 
 - **Remote Inspection**: Inspect container images from various registries (Docker Hub, Quay.io, etc.) without downloading the full image.
